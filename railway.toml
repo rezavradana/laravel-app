@@ -1,5 +1,24 @@
 [build]
+# Command yang dijalankan saat build
 builder = "NIXPACKS"
+buildCommand = """
+composer install --no-dev --optimize-autoloader
+npm install && npm run build
+"""
 
 [variables]
 PHP_VERSION = "8.2"
+
+[start]
+# Command untuk menjalankan Laravel
+cmd = "php artisan serve --host 0.0.0.0 --port $PORT"
+
+[deploy]
+# Command yang dijalankan setelah build selesai (sekali per deploy)
+postDeploy = """
+php artisan migrate --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+"""
