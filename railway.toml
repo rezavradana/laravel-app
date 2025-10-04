@@ -1,16 +1,12 @@
-[build]
-# Command yang dijalankan saat build
-builder = "NIXPACKS"
-
 [variables]
 PHP_VERSION = "8.2"
 
+[build]
+builder = "nixpacks"
+buildCommand = "composer install --no-dev && php artisan config:cache && php artisan route:cache"
+
 [deploy]
-# Command yang dijalankan setelah build selesai (sekali per deploy)
-postDeploy = """
-php artisan migrate --force
-php artisan storage:link
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-"""
+startCommand = "php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT"
+
+[variables]
+APP_ENV = "production"
